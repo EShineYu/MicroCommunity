@@ -111,7 +111,7 @@ public class OrderServiceSMOImpl implements IOrderServiceSMO {
         } finally {
 
             if(responseEntity == null){
-                responseEntity = new ResponseEntity<String>(dataFlow.getResJson().getString("msg"),OrderDataFlowContextFactory.hashMap2MultiValueMap(dataFlow.getResHeaders()),HttpStatus.OK);
+                responseEntity = new ResponseEntity<String>(dataFlow.getResJson().getJSONArray("msg").toJSONString(),OrderDataFlowContextFactory.hashMap2MultiValueMap(dataFlow.getResHeaders()),HttpStatus.OK);
             }
             if(dataFlow != null) {
                 //添加耗时
@@ -136,11 +136,11 @@ public class OrderServiceSMOImpl implements IOrderServiceSMO {
      */
     private void refreshOrderDataFlowResJson(IOrderDataFlowContext dataFlow){
 
-        if(dataFlow.getResJson() == null || dataFlow.getResJson().isEmpty()){
-            JSONObject resJson = new JSONObject();
-            resJson.put("msg","成功");
-            dataFlow.setResJson(resJson);
-        }
+//        if(dataFlow.getResJson() == null || dataFlow.getResJson().isEmpty()){
+//            JSONObject resJson = new JSONObject();
+//            resJson.put("msg","成功");
+//            dataFlow.setResJson(resJson);
+//        }
 
     }
 
@@ -900,6 +900,9 @@ public class OrderServiceSMOImpl implements IOrderServiceSMO {
             throw new ConfigDataException(ResponseConstant.RESULT_CODE_CONFIG_ERROR,"配置错误：c_service_business配置url字段错误,当前无法识别"+serviceBusiness.getBusinessTypeCd());
         }
 
+
+        logger.debug("订单服务调用下游服务请求报文：{}，返回报文：{}",requestBusinessJson,responseMessage);
+
         if(StringUtil.isNullOrNone(responseMessage) || !Assert.isJsonObject(responseMessage)){
             throw new BusinessException(ResponseConstant.RESULT_CODE_INNER_ERROR,"下游系统返回格式不正确，请按协议规范处理");
         }
@@ -956,7 +959,7 @@ public class OrderServiceSMOImpl implements IOrderServiceSMO {
             JSONObject responseJson = doRequestBusinessSystem(dataFlow, serviceBusiness, requestBusinessJson);
 
             //发布事件
-            DataFlowEventPublishing.invokeBusinessBSuccess(dataFlow,business);
+            DataFlowEventPublishing.invokeBusinessBSuccess(dataFlow,business,responseJson);
 
             responseBusinesses.add(responseJson);
 

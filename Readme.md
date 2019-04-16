@@ -22,30 +22,36 @@ Java + spring cloud + mybatis + mysql + kafka + redis
 
 ### 如何开始（how to start）
 
-[从这里开始](https://github.com/java110/MicroCommunity/wiki)
+[http://www.java110.com](http://www.java110.com)
 
 ### 如何安装（how to install）
 
-[从这里安装](https://github.com/java110/MicroCommunity/wiki/install)
+[从这里安装](docs/install.md)
+
+### 接口接口协议
+
+1. [openApi协议](docs/api/Readme.md)
+
+2. [后台协议](docs/services/Readme.md)
 
 ### 运行效果（view）
-1.在浏览器输入 http://yourIp:6001/ 如下图
+1.在浏览器输入 https://localhost:8443/ 如下图
 
-![image](ConsoleService/doc/img/20180507230124.jpg)
+![image](WebService/doc/img/20180507230124.jpg)
 
     点击高级，继续前往。
 
-2.登录系统，用户名为 admin 密码为 admin  如下图
+2.登录系统，用户名为 wuxw 密码为 admin  如下图
 
-![image](ConsoleService/doc/img/20180507230330.jpg)
+![image](WebService/doc/img/20180507230330.jpg)
 
     点击登录，进入如下图：
     
-  ![image](ConsoleService/doc/img/20180507231045.jpg)
+  ![image](WebService/doc/img/20180507231045.jpg)
   
-  ![image](ConsoleService/doc/img/20180509223107.jpg)
+  ![image](WebService/doc/img/20180509223107.jpg)
   
-  ![image](ConsoleService/doc/img/20180511010848.jpg)
+  ![image](WebService/doc/img/20180511010848.jpg)
 
 
 3.统一接口地址：http://ip:8001/httpApi/service

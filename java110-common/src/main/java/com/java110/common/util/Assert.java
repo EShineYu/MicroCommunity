@@ -83,11 +83,9 @@ public class Assert extends org.springframework.util.Assert{
      * @param jsonArray
      * @param message
      */
-    public static void isNull(JSONArray jsonArray,String message){
+    public static void listIsNull(List jsonArray,String message){
 
-        Assert.isNull(jsonArray,message);
-
-        if(jsonArray.size() < 1 ){
+        if(jsonArray != null && jsonArray.size() > 0 ){
             throw new IllegalArgumentException(message) ;
         }
     }
@@ -97,9 +95,9 @@ public class Assert extends org.springframework.util.Assert{
      * @param targetList
      * @param message
      */
-    public static void isNull(List<?> targetList , String message){
+    public static void isNotNull(List<?> targetList , String message){
 
-        Assert.isNull(targetList,message);
+        Assert.notNull(targetList,message);
 
         if(targetList.size()< 1){
             throw new IllegalArgumentException(message) ;

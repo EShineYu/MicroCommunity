@@ -52,6 +52,8 @@ public class GenerateCodeFactory {
         prefixMap.put("storePhotoId","41");
         prefixMap.put("storeCerdentialsId","42");
         prefixMap.put("memberStoreId","43");
+        prefixMap.put("propertyStoreId","44");
+        prefixMap.put("storeUserId","45");
         prefixMap.put("shopId","50");
         prefixMap.put("shopAttrId","51");
         prefixMap.put("shopPhotoId","52");
@@ -79,6 +81,7 @@ public class GenerateCodeFactory {
         prefixMap.put("propertyUserId","93");
         prefixMap.put("propertyFeeId","94");
         prefixMap.put("houseId","95");
+        prefixMap.put("pgId","600");
     }
 
     private static String PLATFORM_CODE = "0001";
@@ -248,6 +251,20 @@ public class GenerateCodeFactory {
         }
         //调用服务
         return getCode(prefixMap.get("storeCerdentialsId"));
+    }
+
+
+    /**
+     *
+     * @return
+     * @throws GenerateCodeException
+     */
+    public static String getStoreUserId()  throws GenerateCodeException{
+        if(!MappingConstant.VALUE_ON.equals(MappingCache.getValue(MappingConstant.KEY_NEED_INVOKE_GENERATE_ID))){
+            return prefixMap.get("storeUserId") +DateUtil.getNow(DateUtil.DATE_FORMATE_STRING_H)+ nextId("%04d");
+        }
+        //调用服务
+        return getCode(prefixMap.get("storeUserId"));
     }
 
 
@@ -612,6 +629,20 @@ public class GenerateCodeFactory {
         //调用服务
         return getCode(prefixMap.get("commentScoreId"));
     }
+
+    /**
+     * pgId生成
+     * @return
+     * @throws GenerateCodeException
+     */
+    public static String getPgId()  throws GenerateCodeException{
+        if(!MappingConstant.VALUE_ON.equals(MappingCache.getValue(MappingConstant.KEY_NEED_INVOKE_GENERATE_ID))){
+            return prefixMap.get("pgId") +DateUtil.getNow(DateUtil.DATE_FORMATE_STRING_H)+ nextId("%04d");
+        }
+        //调用服务
+        return getCode(prefixMap.get("pgId"));
+    }
+
 
 
     /**

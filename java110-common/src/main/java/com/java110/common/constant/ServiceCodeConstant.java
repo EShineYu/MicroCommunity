@@ -9,12 +9,12 @@ public class ServiceCodeConstant {
     /**
      * 查询菜单编码
      */
-    public static final String SERVICE_CODE_QUERY_MENU_ITEM = "query.console.menu";
+    public static final String SERVICE_CODE_QUERY_MENU_INFO = "query.menu.info";
 
     /**
      * 查询菜单编码名称
      */
-    public static final String SERVICE_CODE_QUERY_MENU_ITEM_NAME = "查询菜单";
+    public static final String SERVICE_CODE_QUERY_MENU_INFO_NAME = "查询菜单";
 
     /**
      * 查询菜单编码
@@ -101,6 +101,22 @@ public class ServiceCodeConstant {
     public static final String SERVICE_CODE_SAVE_USER_CREDENTIALS = "save.user.credentials";
 
     /**
+     * 保存用户默认权限
+     */
+    public static final String SERVICE_CODE_SAVE_USER_DEFAULT_PRIVILEGE = "save.user.defaultPrivilege";
+
+    /**
+     * 删除用户全部权限
+     */
+    public static final String SERVICE_CODE_DELETE_USER_ALL_PRIVILEGE= "delete.user.allPrivilege";
+
+
+    /**
+     * 保存用户默认权限
+     */
+    public static final String SERVICE_CODE_QUERY_USER_USERINFO = "query.user.userInfo";
+
+    /**
      * 保存商户信息
      */
     public static final String SERVICE_CODE_SAVE_STORE_INFO = "save.store.info";
@@ -115,7 +131,26 @@ public class ServiceCodeConstant {
      */
     public static final String SERVICE_CODE_DELETE_STORE_INFO = "delete.store.info";
 
+    /**
+     * 添加商户员工
+     */
+    public static final String SERVICE_CODE_SAVE_STORE_USER = "save.store.user";
 
+
+    /**
+     * 删除商户员工
+     */
+    public static final String SERVICE_CODE_DELETE_STORE_USER = "delete.store.user";
+
+    /**
+     * 根据用户查询商户信息
+     */
+    public static final String SERVICE_CODE_QUERY_STORE_BYUSER = "query.store.byuser";
+
+    /**
+     * 根据商户用户信息
+     */
+    public static final String SERVICE_CODE_QUERY_STORE_USERS = "query.store.users";
     /**
      * 商户成员加入信息
      */
@@ -201,6 +236,18 @@ public class ServiceCodeConstant {
      * 检查用户登录服务处理
      */
     public static final String SERVICE_CODE_CHECK_SERVICE_LOGIN = "check.service.login";
+
+    /**
+     * 检查用户登录服务处理
+     */
+    public static final String SERVICE_CODE_QUERY_USER_BY_NAME = "query.user.byName";
+
+
+    /**
+     * 查询出userIds 是商户员工ID的userId
+     */
+    public static final String SERVICE_CODE_QUERY_STOREUSER_BYUSERIDS = "query.storeUser.byUserIds";
+
     /**
      * 刷新缓存
      */
@@ -213,6 +260,11 @@ public class ServiceCodeConstant {
     public static final String SERVICE_CODE_USER_STAFF_ADD = "user.staff.add";
 
     /**
+     * 添加员工 服务
+     */
+    public static final String SERVICE_CODE_USER_STAFF_MODIFY = "user.staff.modify";
+
+    /**
      * 停用员工服务
      */
     public static final String SERVICE_CODE_USER_STAFF_DISABLE = "user.staff.disable";
@@ -222,7 +274,20 @@ public class ServiceCodeConstant {
      */
     public static final String SERVICE_CODE_USER_STAFF_ENABLE = "user.staff.enable";
 
+    /**
+     * 删除员工服务
+     */
+    public static final String SERVICE_CODE_USER_STAFF_DELETE = "user.staff.delete";
 
+    /**
+     * 查询 员工
+     */
+    public static final String SERVICE_CODE_QUERY_STAFF_INFOS = "query.staff.infos";
+
+    /**
+     * 查询 员工
+     */
+    public static final String SERVICE_CODE_QUERY_STAFF_BY_NAME = "query.staff.byName";
 
     /**
      * 保存商户信息
@@ -284,6 +349,11 @@ public class ServiceCodeConstant {
     public static final String SERVICE_CODE_DELETE_AGENT_PHOTO = "delete.agent.photo";
     public static final String SERVICE_CODE_DELETE_AGENT_CERDENTIALS = "delete.agent.cerdentials";
     public static final String SERVICE_CODE_DELETE_AGENT_USER = "delete.agent.user";
+
+
+
+    //检查用户是否有权限
+    public static final String SERVICE_CODE_CHECK_USER_HAS_PRIVILEGE = "check.user.hasPrivilege";
 
 
 

@@ -10,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,16 +21,34 @@ import java.util.Map;
 /**
  * Created by wuxw on 2018/5/2.
  */
-public class JwtFilter extends GenericFilterBean {
+public class JwtFilter implements Filter {
 
     private final static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
+    private  String[] excludedUris;
+
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        excludedUris = filterConfig.getInitParameter("excludedUri").split(",");
+    }
 
     public void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
             throws IOException, ServletException {
 
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
+        String uri = request.getServletPath();
+        //如果是 不能过滤的地址选择跳过
+        if(isExcludedUri(uri)){
+            chain.doFilter(request, response);
+            return ;
+        }
         String token = "";
         try {
             //获取token
@@ -55,11 +70,11 @@ public class JwtFilter extends GenericFilterBean {
                         DataTransactionFactory.pageResponseJson(ResponseConstant.RESULT_CODE_NO_AUTHORITY_ERROR,e.getMessage(),null),
                         "UTF-8");
             }else{
-                response.sendRedirect("/login?code="+e.getResult().getCode()+"&msg="+e.getResult().getMsg());
+                response.sendRedirect("/flow/login");
             }
 
         }catch (Exception e){
-            response.sendRedirect("/login?code="+ResponseConstant.RESULT_CODE_INNER_ERROR+"&msg=鉴权失败");
+            response.sendRedirect("/flow/login");
         }
     }
 
@@ -96,5 +111,19 @@ public class JwtFilter extends GenericFilterBean {
             e.printStackTrace();
         }
     }
+
+    private boolean isExcludedUri(String uri) {
+        if (excludedUris == null || excludedUris.length <= 0) {
+            return false;
+        }
+        for (String ex : excludedUris) {
+            uri = uri.trim();
+            ex = ex.trim();
+            if (uri.toLowerCase().matches(ex.toLowerCase().replace("*",".*")))
+                return true;
+        }
+        return false;
+    }
+
 
 }

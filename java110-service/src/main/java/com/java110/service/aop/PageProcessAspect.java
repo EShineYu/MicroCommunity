@@ -2,11 +2,14 @@ package com.java110.service.aop;
 
 import com.alibaba.fastjson.JSONObject;
 import com.java110.common.constant.CommonConstant;
+import com.java110.common.constant.ResponseConstant;
+import com.java110.common.exception.FilterException;
+import com.java110.core.context.IPageData;
 import com.java110.core.factory.PageDataFactory;
 import com.java110.common.util.Assert;
 import com.java110.core.factory.GenerateCodeFactory;
 import com.java110.common.util.StringUtil;
-import com.java110.entity.service.PageData;
+import com.java110.core.context.PageData;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -35,7 +38,6 @@ public class PageProcessAspect {
 
     private final static Logger logger = LoggerFactory.getLogger(PageProcessAspect.class);
 
-
     @Pointcut("execution(public * com.java110..*.*Controller.*(..)) || execution(public * com.java110..*.*Rest.*(..))")
     public void dataProcess(){}
 
@@ -51,8 +53,11 @@ public class PageProcessAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        PageData pd = null;
-        if("POST".equals(request.getMethod())){
+        IPageData pd = null;
+        String reqData = "";
+        String userId = "";
+        String sessionId = request.getSession().getId();
+        if("POST,PUT".contains(request.getMethod())){
             InputStream in = request.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             //reader.
@@ -61,14 +66,11 @@ public class PageProcessAspect {
             while ((str = reader.readLine()) != null) {
                 sb.append(str);
             }
-            str = sb.toString();
-            if(Assert.isPageJsonObject(str)){
-                 pd = PageDataFactory.newInstance().builder(str).setTransactionId(GenerateCodeFactory.getPageTransactionId());
-            }
+            reqData = sb.toString();
+
         }
         //对 get情况下的参数进行封装
-        if(pd == null){
-            pd = PageDataFactory.newInstance().setTransactionId(GenerateCodeFactory.getPageTransactionId());
+        else{
             Map<String,String[]> params = request.getParameterMap();
             if(params != null  && !params.isEmpty()) {
                 JSONObject paramObj = new JSONObject();
@@ -83,18 +85,37 @@ public class PageProcessAspect {
                     }
                     continue;
                 }
-                pd.setParam(paramObj);
+                reqData = paramObj.toJSONString();
             }
         }
-
+        // 获取 userId
         if(request.getAttribute("claims") != null && request.getAttribute("claims") instanceof Map){
             Map<String,String> userInfo = (Map<String,String>)request.getAttribute("claims");
             if(userInfo.containsKey(CommonConstant.LOGIN_USER_ID)){
-                pd.setUserId(userInfo.get(CommonConstant.LOGIN_USER_ID));
+                userId = userInfo.get(CommonConstant.LOGIN_USER_ID);
             }
-            pd.setUserInfo(userInfo);
-
         }
+
+        // 获取组件名称 和方法名称
+        String url = request.getRequestURL()!=null?request.getRequestURL().toString():"";
+        String componentCode = "";
+        String componentMethod = "";
+        if(url.contains("callComponent")){ //组件处理
+            String []urls = url.split("/");
+
+            if(urls.length == 6){
+                componentCode = urls[4];
+                componentMethod = urls[5];
+            }
+        }else if(url.contains("flow")){ //流程处理
+            String []urls = url.split("/");
+
+            if(urls.length == 5){
+                componentCode = urls[4];
+            }
+        }
+
+         pd = PageData.newInstance().builder(userId,this.getToken(request),reqData,componentCode,componentMethod,url,sessionId);
         request.setAttribute(CommonConstant.CONTEXT_PAGE_DATA,pd);
 
     }
@@ -122,14 +143,8 @@ public class PageProcessAspect {
             return ;
         }
 
-        if(!StringUtil.isNullOrNone(pd.getToken())) {
-            HttpServletResponse response = attributes.getResponse();
-            Cookie cookie = new Cookie(CommonConstant.COOKIE_AUTH_TOKEN, pd.getToken());
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-            response.flushBuffer();
-        }
+        //写cookies信息
+        writeCookieInfo(pd,attributes);
 
     }
 
@@ -143,5 +158,44 @@ public class PageProcessAspect {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    /**
+     * 获取TOKEN
+     * @param request
+     * @return
+     */
+    private String getToken(HttpServletRequest request) throws FilterException {
+        String token = "";
+        if(request.getCookies() == null || request.getCookies().length == 0){
+            return token;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if (CommonConstant.COOKIE_AUTH_TOKEN.equals(cookie.getName())) {
+                token = cookie.getValue();
+            }
+        }
+        return token;
+    }
+
+
+    /**
+     * 写cookie 信息
+     * @param pd 页面封装信息
+     * @param attributes
+     * @throws IOException
+     */
+    private void writeCookieInfo(IPageData pd,ServletRequestAttributes attributes) throws IOException {
+        // 这里目前只写到组件级别，如果需要 写成方法级别
+        if(!StringUtil.isNullOrNone(pd.getToken()) && "login".equals(pd.getComponentCode())) {
+            HttpServletResponse response = attributes.getResponse();
+            Cookie cookie = new Cookie(CommonConstant.COOKIE_AUTH_TOKEN, pd.getToken());
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            response.flushBuffer();
+        }
+
     }
 }

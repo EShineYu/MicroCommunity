@@ -1,0 +1,74 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>填写公司信息</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <h2>
+                        完善公司信息
+                    </h2>
+                    <p>
+                        请仔细填写公司相关信息，有利于快速审核
+                    </p>
+
+                    <form id="component" class="wizard-big wizard clearfix" role="application" novalidate="novalidate">
+                        <p style="color: red;">{{companyInfo.errorInfo}}</p>
+                        <div class="steps clearfix">
+                            <ul role="tablist">
+                                <li role="tab" v-bind:class="{ current: step==1,disabled:step!=1 }" >
+                                    <a>
+                                        <span class="current-info audible">current step: </span>
+                                        <span class="number">1.</span> 基本信息
+                                    </a>
+                                </li>
+                                <li role="tab" v-bind:class="{ current: step==2,disabled:step!=2 }">
+                                    <a>
+                                        <span class="number">2.</span> 扩展信息
+                                    </a>
+                                </li>
+                                <li role="tab" v-bind:class="{ current: step==3,disabled:step!=3 }">
+                                    <a>
+                                    <span class="number">3.</span> 证件信息
+                                    </a>
+                                </li>
+                                <li role="tab" v-bind:class="{ current: step==4,disabled:step!=4 }">
+                                    <a>
+                                    <span class="number">4.</span> 须知
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content clearfix">
+                            <h1 tabindex="-1" class="title current">基本信息</h1>
+                            <vc:create name="company-base"></vc:create>
+                            <h1 tabindex="-1" class="title">扩展信息</h1>
+                            <vc:create name="company-extend"></vc:create>
+                            <h1 id="component-h-1" tabindex="-1" class="title">证件信息</h1>
+                            <vc:create name="company-cerdentials"></vc:create>
+                            <h1 id="component-h-2" tabindex="-1" class="title">须知</h1>
+                            <fieldset id="component-p-2" role="tabpanel" aria-labelledby="component-h-2" class="body" aria-hidden="true"  v-bind:class="{no_display:step!=4}">
+                                <h4>这里是须知</h4>
+                                <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required" aria-required="true" />
+                                <label for="acceptTerms">我同意并遵守以上信息.</label>
+                            </fieldset>
+
+                        </div>
+                        <div class="actions clearfix">
+                            <ul role="menu" aria-label="Pagination">
+                                <li v-bind:class="{disabled:step == 1}" aria-disabled="true"><a v-on:click="previous()" role="menuitem">上一步</a></li>
+                                <li v-bind:class="{no_display:step==4}"><a v-on:click="next()" role="menuitem">下一步</a></li>
+                                <li v-bind:class="{no_display:step!=4}"><a v-on:click="finish()" role="menuitem">提交审核</a></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
